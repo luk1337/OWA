@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@drawable/ic_launcher_background" />
-    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+<adaptive-icon
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@android:color/white" />
+    <foreground>
+        <layer-list>
+            <item>
+                <inset android:drawable="@mipmap/ic_launcher_foreground_base" android:insetLeft="25.925922%" android:insetRight="28.703701%" android:insetTop="30.555557%" android:insetBottom="28.703701%" />
+            </item>
+            <item android:drawable="@mipmap/ic_flavor_foreground" />
+        </layer-list>
+    </foreground>
 </adaptive-icon>
