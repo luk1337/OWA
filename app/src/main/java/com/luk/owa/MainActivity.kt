@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
                     super.onProgressChanged(view, newProgress)
 
                     binding.progressBar.progress = progress
-                    binding.progressBar.isVisible = progress < 100
+                    binding.progressBar.isVisible = progress in 1..99
                 }
             }
 
