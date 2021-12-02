@@ -71,7 +71,6 @@ class MainActivity : AppCompatActivity() {
             setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
             setOnMenuItemClickListener {
                 webView.loadUrl(BuildConfig.OWA_HOST)
-                webView.reload()
                 true
             }
         }
