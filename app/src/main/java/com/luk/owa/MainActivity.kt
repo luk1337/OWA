@@ -3,16 +3,30 @@ package com.luk.owa
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import com.luk.owa.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+
     private val webView by lazy {
-        WebView(this).apply {
+        binding.webview.apply {
             settings.javaScriptEnabled = true
             settings.userAgentString =
                 "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.0.0 Mobile Safari/537.36"
+
+            webChromeClient = object : WebChromeClient() {
+                override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                    super.onProgressChanged(view, newProgress)
+
+                    binding.progressBar.progress = progress
+                    binding.progressBar.isVisible = progress < 100
+                }
+            }
 
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {
@@ -30,7 +44,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(webView)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         webView.loadUrl(BuildConfig.OWA_HOST)
     }
