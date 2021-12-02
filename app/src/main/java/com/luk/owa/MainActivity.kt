@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
                     if (url?.startsWith("${BuildConfig.OWA_HOST}/lm_auth_proxy") == true ||
                         url?.startsWith("${BuildConfig.OWA_HOST}/owa/auth/logon.aspx") == true
                     ) {
-                        view?.evaluateJavascript(LOGIN_JS) {}
+                        view?.evaluateJavascript(LOGIN_JS, null)
                     }
                 }
 
