@@ -1,5 +1,7 @@
 package com.luk.owa
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.Menu
@@ -39,6 +41,16 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         view?.evaluateJavascript(LOGIN_JS) {}
                     }
+                }
+
+                override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                    if (url?.startsWith(BuildConfig.OWA_HOST) == false) {
+                        runCatching {
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                        }
+                        return true
+                    }
+                    return super.shouldOverrideUrlLoading(view, url)
                 }
             }
         }
