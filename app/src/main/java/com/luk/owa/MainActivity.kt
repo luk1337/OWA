@@ -1,8 +1,10 @@
 package com.luk.owa
 
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -64,9 +66,31 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onBackPressed() {}
+    override fun onBackPressed() {
+        webView.evaluateJavascript(BACK_JS) {
+            if (it == "true") {
+                val time = SystemClock.uptimeMillis()
+                webView.dispatchTouchEvent(
+                    MotionEvent.obtain(
+                        time, time, MotionEvent.ACTION_DOWN, BACK_ARROW_X, BACK_ARROW_Y, 0
+                    )
+                )
+                webView.dispatchTouchEvent(
+                    MotionEvent.obtain(
+                        time, time, MotionEvent.ACTION_UP, BACK_ARROW_X, BACK_ARROW_Y, 0
+                    )
+                )
+            }
+        }
+    }
 
     companion object {
+        private const val BACK_ARROW_Y = 15.0f
+        private const val BACK_ARROW_X = 15.0f
+
+        private const val BACK_JS = """
+            $("button[autoid=_ms_9] span[class='_fc_3 owaimg ms-Icon--arrowLeft ms-icon-font-size-21']")[0] !== undefined
+        """
         private const val LOGIN_JS = """
             let logonForm = document.getElementsByName("logonForm")[0] || document.getElementById("logonForm");
             logonForm.username.value = "${BuildConfig.OWA_USERNAME}";
