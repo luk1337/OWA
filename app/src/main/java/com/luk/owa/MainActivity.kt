@@ -67,19 +67,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        webView.evaluateJavascript(BACK_JS) {
-            if (it == "true") {
-                val time = SystemClock.uptimeMillis()
-                webView.dispatchTouchEvent(
-                    MotionEvent.obtain(
-                        time, time, MotionEvent.ACTION_DOWN, BACK_ARROW_X, BACK_ARROW_Y, 0
+        repeat(2) {
+            webView.evaluateJavascript(BACK_JS) {
+                if (it == "true") {
+                    val time = SystemClock.uptimeMillis()
+                    webView.dispatchTouchEvent(
+                        MotionEvent.obtain(
+                            time, time, MotionEvent.ACTION_DOWN, BACK_ARROW_X, BACK_ARROW_Y, 0
+                        )
                     )
-                )
-                webView.dispatchTouchEvent(
-                    MotionEvent.obtain(
-                        time, time, MotionEvent.ACTION_UP, BACK_ARROW_X, BACK_ARROW_Y, 0
+                    webView.dispatchTouchEvent(
+                        MotionEvent.obtain(
+                            time, time, MotionEvent.ACTION_UP, BACK_ARROW_X, BACK_ARROW_Y, 0
+                        )
                     )
-                )
+                }
             }
         }
     }
