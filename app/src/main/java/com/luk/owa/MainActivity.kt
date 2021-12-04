@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        webView.loadUrl(BuildConfig.OWA_HOST)
+        webView.loadUrl("${BuildConfig.OWA_HOST}/owa")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
             setIcon(android.R.drawable.ic_menu_rotate)
             setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
             setOnMenuItemClickListener {
-                webView.loadUrl(BuildConfig.OWA_HOST)
+                webView.loadUrl("${BuildConfig.OWA_HOST}/owa")
                 true
             }
         }
