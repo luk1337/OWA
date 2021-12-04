@@ -12,11 +12,17 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.preference.PreferenceManager
+import androidx.webkit.WebSettingsCompat
+import androidx.webkit.WebViewFeature
 import com.luk.owa.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
+    private val sharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(this)
+    }
     private val webView by lazy {
         binding.webview.apply {
             settings.javaScriptEnabled = true
@@ -53,6 +59,10 @@ class MainActivity : AppCompatActivity() {
                     return super.shouldOverrideUrlLoading(view, url)
                 }
             }
+
+            setForceDark(
+                sharedPreferences.getBoolean(SETTINGS_DARK_MODE, SETTINGS_DARK_MODE_DEFAULT)
+            )
         }
     }
 
@@ -72,6 +82,17 @@ class MainActivity : AppCompatActivity() {
             setOnMenuItemClickListener {
                 webView.loadUrl(BuildConfig.OWA_HOST)
                 true
+            }
+        }
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+            menu.add(Menu.NONE, 1, Menu.NONE, R.string.menu_dark_mode).apply {
+                isCheckable = true
+                isChecked = webView.forceDarkEnabled()
+                setOnMenuItemClickListener {
+                    webView.setForceDark(!webView.forceDarkEnabled())
+                    isChecked = !isChecked
+                    true
+                }
             }
         }
         return true
@@ -97,6 +118,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun WebView.forceDarkEnabled() =
+        WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK) &&
+                WebSettingsCompat.getForceDark(settings) == WebSettingsCompat.FORCE_DARK_ON
+
+    private fun WebView.setForceDark(enabled: Boolean) {
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+            WebSettingsCompat.setForceDark(
+                settings,
+                if (enabled) WebSettingsCompat.FORCE_DARK_ON else WebSettingsCompat.FORCE_DARK_OFF
+            )
+            sharedPreferences.edit().putBoolean(SETTINGS_DARK_MODE, enabled).apply()
+        }
+    }
+
     companion object {
         private const val BACK_ARROW_Y = 15.0f
         private const val BACK_ARROW_X = 15.0f
@@ -110,5 +145,8 @@ class MainActivity : AppCompatActivity() {
             logonForm.password.value = "${BuildConfig.OWA_PASSWORD}";
             HTMLFormElement.prototype.submit.call(logonForm)
         """
+
+        private const val SETTINGS_DARK_MODE = "SETTINGS_DARK_MODE"
+        private const val SETTINGS_DARK_MODE_DEFAULT = false
     }
 }
