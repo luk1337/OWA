@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity() {
             let logonForm = document.getElementsByName("logonForm")[0] || document.getElementById("logonForm");
             logonForm.username.value = "${BuildConfig.OWA_USERNAME}";
             logonForm.password.value = "${BuildConfig.OWA_PASSWORD}";
-            HTMLFormElement.prototype.submit.call(logonForm)
+            HTMLFormElement.prototype.submit.call(logonForm);
         """
 
         private const val SETTINGS_DARK_MODE = "SETTINGS_DARK_MODE"
