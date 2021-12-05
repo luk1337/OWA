@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menu!!.add(Menu.NONE, 0, Menu.NONE, R.string.menu_refresh).apply {
-            setIcon(android.R.drawable.ic_menu_rotate)
+            setIcon(R.drawable.outline_refresh_24)
             setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
             setOnMenuItemClickListener {
                 webView.loadUrl("${BuildConfig.OWA_HOST}/owa")
