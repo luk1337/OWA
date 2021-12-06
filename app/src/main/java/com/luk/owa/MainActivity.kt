@@ -60,11 +60,23 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            setForceDark(
+            forceDarkMode =
                 sharedPreferences.getBoolean(SETTINGS_DARK_MODE, SETTINGS_DARK_MODE_DEFAULT)
-            )
         }
     }
+
+    private var WebView.forceDarkMode: Boolean
+        get() = WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK) &&
+                WebSettingsCompat.getForceDark(settings) == WebSettingsCompat.FORCE_DARK_ON
+        set(value) {
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+                WebSettingsCompat.setForceDark(
+                    settings,
+                    if (value) WebSettingsCompat.FORCE_DARK_ON else WebSettingsCompat.FORCE_DARK_OFF
+                )
+                sharedPreferences.edit().putBoolean(SETTINGS_DARK_MODE, value).apply()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,9 +99,9 @@ class MainActivity : AppCompatActivity() {
         if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
             menu.add(Menu.NONE, 1, Menu.NONE, R.string.menu_dark_mode).apply {
                 isCheckable = true
-                isChecked = webView.forceDarkEnabled()
+                isChecked = webView.forceDarkMode
                 setOnMenuItemClickListener {
-                    webView.setForceDark(!webView.forceDarkEnabled())
+                    webView.forceDarkMode = !webView.forceDarkMode
                     isChecked = !isChecked
                     true
                 }
@@ -115,20 +127,6 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
             }
-        }
-    }
-
-    private fun WebView.forceDarkEnabled() =
-        WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK) &&
-                WebSettingsCompat.getForceDark(settings) == WebSettingsCompat.FORCE_DARK_ON
-
-    private fun WebView.setForceDark(enabled: Boolean) {
-        if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
-            WebSettingsCompat.setForceDark(
-                settings,
-                if (enabled) WebSettingsCompat.FORCE_DARK_ON else WebSettingsCompat.FORCE_DARK_OFF
-            )
-            sharedPreferences.edit().putBoolean(SETTINGS_DARK_MODE, enabled).apply()
         }
     }
 
