@@ -7,6 +7,7 @@ import android.os.SystemClock
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
+import android.webkit.CookieManager
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -92,7 +93,9 @@ class MainActivity : AppCompatActivity() {
             setIcon(R.drawable.outline_refresh_24)
             setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
             setOnMenuItemClickListener {
-                webView.loadUrl("${BuildConfig.OWA_HOST}/owa")
+                CookieManager.getInstance().removeAllCookies {
+                    webView.loadUrl("${BuildConfig.OWA_HOST}/owa")
+                }
                 true
             }
         }
