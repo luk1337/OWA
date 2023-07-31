@@ -1,13 +1,17 @@
 package com.luk.owa
 
+import android.app.DownloadManager
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.os.SystemClock
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.webkit.CookieManager
+import android.webkit.URLUtil
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -63,6 +67,28 @@ class MainActivity : AppCompatActivity() {
 
             forceDarkMode =
                 sharedPreferences.getBoolean(SETTINGS_DARK_MODE, SETTINGS_DARK_MODE_DEFAULT)
+
+            setDownloadListener { url: String?, _, contentDisposition: String?, mimeType: String?, _ ->
+                getSystemService(DownloadManager::class.java).enqueue(
+                    DownloadManager.Request(Uri.parse(url)).apply {
+                        addRequestHeader("Cookie", CookieManager.getInstance().getCookie(url))
+
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                            @Suppress("DEPRECATION")
+                            allowScanningByMediaScanner()
+                        }
+
+                        setDestinationInExternalPublicDir(
+                            Environment.DIRECTORY_DOWNLOADS,
+                            URLUtil.guessFileName(url, contentDisposition, mimeType)
+                        )
+
+                        setNotificationVisibility(
+                            DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+                        )
+                    }
+                )
+            }
         }
     }
 
