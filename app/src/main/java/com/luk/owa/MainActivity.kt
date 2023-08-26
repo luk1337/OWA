@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         binding.webview.apply {
             settings.javaScriptEnabled = true
             settings.userAgentString =
-                "Mozilla/5.0 (Linux; Android 12) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Mobile Safari/537.36"
+                "Mozilla/5.0 (Linux; Android 12) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/200.0.0.0 Mobile Safari/537.36"
 
             webChromeClient = object : WebChromeClient() {
                 override fun onProgressChanged(view: WebView?, newProgress: Int) {
