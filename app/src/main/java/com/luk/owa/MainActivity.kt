@@ -93,10 +93,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private var WebView.forceDarkMode: Boolean
-        get() = WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK) &&
+        get() = when {
+            WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING) ->
+                WebSettingsCompat.isAlgorithmicDarkeningAllowed(settings)
+            WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK) ->
                 WebSettingsCompat.getForceDark(settings) == WebSettingsCompat.FORCE_DARK_ON
+            else -> false
+        }
         set(value) {
-            if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
+                WebSettingsCompat.setAlgorithmicDarkeningAllowed(settings, value)
+                sharedPreferences.edit().putBoolean(SETTINGS_DARK_MODE, value).apply()
+            } else if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
                 WebSettingsCompat.setForceDark(
                     settings,
                     if (value) WebSettingsCompat.FORCE_DARK_ON else WebSettingsCompat.FORCE_DARK_OFF
